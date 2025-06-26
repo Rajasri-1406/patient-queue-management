@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergency Queue</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='emergency_queue.css') }}">
+    <meta http-equiv="refresh" content="15">
+
+</head>
+<body>
+    <nav>
+    <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+        <li><a href="{{ url_for('emergency') }}">New Emergency</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+    </ul>
+</nav>
+
+    <h2>Emergency Queue</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="get" action="{{ url_for('emergency_queue') }}">
+        <label for="status">Filter by Status:</label>
+        <select name="status" onchange="this.form.submit()">
+            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+            <option value="Waiting" {% if status_filter == 'Waiting' %}selected{% endif %}>Waiting</option>
+        </select>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Patient Name</th>
+            <th>Phone</th>
+            <th>Specialization</th>
+            <th>Doctor</th>
+            <th>Reported Time</th>
+            <th>Status</th>
+        </tr>
+        {% for case in cases %}
+       <tr>
+            <td>{{ case[0] }}</td>
+            <td>{{ case[1] }}</td>
+            <td>{{ case[2] }}</td>
+            <td>{{ case[3] }}</td>
+            <td>{{ case[4] }}</td>
+            <td>{{ case[5] }}</td>
+            <td>
+                {{ case[6] }}
+                {% if role in ['Doctor', 'Admin'] and case[6] != 'Diagnosed' %}
+                <form method="POST" action="{{ url_for('mark_emergency_diagnosed', emergency_id=case[0]) }}" style="display:inline;">
+                    <button type="submit">Mark as Diagnosed</button>
+                </form>
+                {% endif %}
+            </td>
+
+        </tr>
+
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('home') }}" class="back-home">Back to Home</a>
+
+</body>
+</html>

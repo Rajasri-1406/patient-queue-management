@@ -1,0 +1,161 @@
+/* triage.css - Enhanced multi-step styling */
+
+body {
+    background: url('/static/images/bg1.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    transition: background-image 0.5s ease-in-out;
+}
+
+
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.70);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.container h2 {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    color:  #17a2b8;
+    margin-bottom: 30px;
+}
+
+/* Step sections stacked */
+form > div {
+    display: none;
+}
+form > div:first-child {
+    display: block;
+}
+
+.gridw {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 0px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+select {
+    width: 110%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+textarea {
+    resize: vertical;
+    min-height: 40px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color:  #17a2b8;
+    outline: none;
+}
+
+input[readonly] {
+    background-color: #e9ecef;
+    color: #555;
+    width: 95%;
+}
+select[disabled] {
+    background-color: #e9ecef;
+    color: #555;
+    width: 105%;
+}
+
+
+/* All buttons: Next / Submit */
+button {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color:  #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Centering buttons */
+form button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Responsive: stack fields on small screens */
+@media (max-width: 768px) {
+    .gridw {
+        grid-template-columns: 1fr;
+    }
+
+    .container {
+        padding: 20px;
+    }
+}
+
+/* Navbar */
+nav {
+    background: #17a2b8;
+    padding: 10px;
+    text-align: center;
+    
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 20px;
+    
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 23px;
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Availability Log</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Doctor Availability History</h2>
+        <table>
+            <tr>
+                <th>Doctor Name</th>
+                <th>Specialization</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+            </tr>
+            {% for log in log_data %}
+            <tr>
+                <td>{{ log[0] }}</td>  <!-- Doctor Name -->
+                <td>{{ log[1] }}</td>  <!-- Specialization -->
+                <td class="status-{{ log[2].lower() }}">{{ log[2] }}</td>  <!-- Status -->
+                <td>{{ log[3] }}</td>  <!-- Timestamp -->
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</body>
+</html>

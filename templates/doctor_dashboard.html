@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='images/dashboard.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+          }
+          .back-button:hover {
+            background-color: #0056b3;
+          }
+         nav {
+    background: rgba(19, 132, 150, 0.95);
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 30px;
+}
+
+nav ul li a {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    color: white;
+    text-decoration: none;
+    font-size: 23px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+    
+    .container {
+        margin-top: 100px;
+        padding: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 12px 15px;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    th {
+        background-color: #138496;
+        color: white;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f1f7ff;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .btn:hover {
+        background-color: #218838;
+    }
+
+    .status-diagnosed {
+        color: #888;
+        font-weight: bold;
+    }
+</style>
+
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div >
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+      <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+     
+      
+      {% if username %}
+        {% if role == 'Doctor' %}
+          <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+        {% elif role == 'Admin' %}
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+ </div>
+    <div class="container">
+        <!-- ✅ Patients Table -->
+        <h2>My Patients</h2>
+        <table>
+            <tr>
+                <th>Patient ID</th>
+                <th>Patient Name</th>
+                <th>Appointment Date</th>
+                <th>Appointment Time</th>
+                <th>Status</th>
+                <th>Triage Level</th>
+                <th>Priority</th>
+                <th>Action</th>
+            </tr>
+            {% for patient in patients %}
+            <tr>
+                <td>{{ patient[0] }}</td>
+                <td>{{ patient[1] }}</td>
+                <td>{{ patient[2] }}</td>
+                <td>{{ patient[3] }}</td>
+                <td>{{ patient[4] }}</td>
+                <td>
+                    <span style="color:
+                        {% if patient[5] == 'Critical' %} red
+                        {% elif patient[5] == 'High' %} orange
+                        {% elif patient[5] == 'Moderate' %} goldenrod
+                        {% else %} green
+                        {% endif %}
+                    ; font-weight: bold;">
+                        {{ patient[5] }}
+                    </span>
+                </td>
+
+                <td>
+                    {% if patient[5] == 'Critical' %} 4
+                    {% elif patient[5] == 'High' %} 3
+                    {% elif patient[5] == 'Moderate' %} 2
+                    {% else %} 1
+                    {% endif %}
+                </td>
+                <td>
+                    {% if patient[4] == 'Pending' %}
+                    <a href="{{ url_for('diagnose', patient_id=patient[0], specialization=specialization) }}"class="btn">Diagnose</a>
+
+                    {% else %}
+                        <span class="status-diagnosed">Diagnosed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <a class="back-button" href="{{ url_for('home') }}">Back to Home</a>
+    </div>
+
+    <!-- ✅ Doctor Availability Toggle Script -->
+    <script>
+        $(document).ready(function () {
+            $.get("{{ url_for('get_doctors') }}", function(data) {
+                $("#doctorStatus").text(data.status);
+                if (data.status === "Unavailable") {
+                    $("#toggleAvailability").text("Mark as Available");
+                }
+            });
+
+            $("#toggleAvailability").click(function () {
+                $.ajax({
+                    url: "{{ url_for('toggle_doctor_availability') }}",
+                    type: "GET",
+                    success: function (response) {
+                        alert(response.message);
+                        $("#doctorStatus").text(response.new_status);
+                        $("#toggleAvailability").text(response.new_status === "Available" ? "Mark as Unavailable" : "Mark as Available");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

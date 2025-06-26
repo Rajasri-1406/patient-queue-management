@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnosis History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body {
+    background: url("{{ url_for('static', filename='images/medical_history.jpg') }}") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+nav {
+    background: rgba(19, 132, 150, 0.95);
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 30px;
+}
+
+nav ul li a {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    color: white;
+    text-decoration: none;
+    font-size: 23px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px;
+    margin: 120px auto 50px auto; /* Increased top margin to avoid nav overlap */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #17a2b8;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.back-btn:hover {
+    background-color: #138496;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+      
+    </style>
+</head>
+<body>
+    <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+      <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+     
+      
+      {% if username %}
+        {% if role == 'Doctor' %}
+          <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+        {% elif role == 'Admin' %}
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+    <div class="container">
+        <h2>Your Diagnosis History</h2>
+
+        {% if history %}
+        <table>
+            <tr>
+                <th>Doctor</th>
+                <th>Specialization</th>
+                <th>Criticality</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Medicines</th>
+                <th>Prescription</th>
+                <th>Notes</th>
+            </tr>
+            {% for record in history %}
+            <tr>
+                <td>{{ record.doctor_name }}</td>
+                <td>{{ record.specialization }}</td>
+                <td>{{ record.criticality }}</td>
+                <td>{{ record.appointment_date }}</td>
+                <td>{{ record.appointment_time }}</td>
+                <td>{{ record.medicines }}</td>
+                <td>{{ record.prescription }}</td>
+                <td>{{ record.notes }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No diagnosis history found.</p>
+        {% endif %}
+
+        <a href="{{ url_for('home') }}" class="back-btn">Back to Home</a>
+    </div>
+</body>
+</html>

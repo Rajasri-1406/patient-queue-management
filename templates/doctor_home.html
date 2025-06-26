@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    
+    body {
+      background: url("{{ url_for('static', filename='images/doc-id.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+  }
+
+  .container {
+    width: 400px;
+    margin: 100px auto;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+    h2 {
+      color: #007bff;
+      margin-bottom: 30px;
+    }
+    .info {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .info p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .back-button {
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+    
+       /* Navbar */
+        nav {
+            background:#138496;
+            padding: 10px;
+            text-align: center;
+            
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 20px;
+            
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 23px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+      
+
+  </style>
+</head>
+<body>
+  <div >
+  <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+      <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+     
+      
+      {% if username %}
+        {% if role == 'Doctor' %}
+          <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+        {% elif role == 'Admin' %}
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+ </div>
+  <div class="container">
+    <h2>Doctor ID Card</h2>
+    <div class="card-info" style="display: flex; align-items: center; gap: 20px;">
+      
+      <!-- Doctor Icon -->
+      <i class="fas fa-user-doctor" style="font-size: 80px; color: #3c8dbc;"></i>
+      
+      <!-- Doctor Details -->
+      <div class="info">
+        <p><strong>Name:</strong> Dr. {{ doctor.name }}</p>
+        <p><strong>Doctor ID:</strong> {{ doctor.id }}</p>
+        <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+        <p><strong>Available Days:</strong> {{ doctor.available_days }}</p>
+      </div>
+    </div>
+    <a class="back-button" href="{{ url_for('home') }}">Back to Home</a>
+  </div>
+</body>
+</html>

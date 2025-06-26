@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Details</title>
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='images/patient-information.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            width: 400px;
+            margin: 100px auto;
+            background: rgba(255, 255, 255, 0.75); ;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .id-card h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .id-card .detail {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #17a2b8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background-color: #138496;
+        }
+        /* Navbar */
+        nav {
+            background:#138496;
+            padding: 10px;
+            text-align: center;
+            
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 20px;
+            
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 23px;
+        }
+    </style>
+</head>
+<body>
+<div >
+   <nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+      <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+     
+      
+      {% if username %}
+        {% if role == 'Doctor' %}
+          <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+        {% elif role == 'Admin' %}
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+ </div>
+<div class="container">
+    <div class="id-card">
+        <h2>Patient ID Card</h2>
+        <div class="detail"><strong>ID:</strong> {{ patient.patient_id }}</div>
+        <div class="detail"><strong>Name:</strong> {{ patient.name }}</div>
+        <div class="detail"><strong>Contact:</strong> {{ patient.contact }}</div>
+        <div class="detail"><strong>Age:</strong> {{ patient.age }}</div>
+        <div class="detail"><strong>Gender:</strong> {{ patient.gender }}</div>
+
+        <a href="{{ url_for('home') }}" class="back-btn">Back to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Automated Triage System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='triage.css') }}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    #specialization,#available_days{
+        background-color: #e9ecef;
+        color: #555;
+        width: 100%;
+    }
+    #patient_id{
+        background-color: #e9ecef;
+        color: #555;
+        width: 100%;
+    }
+  </style>
+</head>
+<body>
+ <div >
+<nav>
+    <ul>
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('triage') }}"><b>Appointment</b></a></li>
+      <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+      
+     
+      
+      {% if username %}
+        {% if role == 'Doctor' %}
+          <li><a href="{{ url_for('doctor_dashboard') }}">Dashboard</a></li>
+        {% elif role == 'Admin' %}
+          <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+ </div>
+
+<div class="container">
+  <h2>Book Your Appointment</h2>
+
+  <form action="{{ url_for('triage') }}" method="POST">
+
+  <!-- 🔹 STEP 1: Personal Info -->
+  <div id="step1">
+    <div class="gridw">
+      <label for="patient_id">Patient ID:</label>
+      <input type="text" id="patient_id" name="patient_id" value="{{ patient_id or '' }}" readonly style="background-color:#f0f0f0; border: 1px solid #ccc; padding: 5px; margin-bottom: 10px;" />
+
+      <label>Name:</label>
+      <input type="text" name="name" value="{{ session.get('username', '') }}" {% if session.get('role') == 'Patient' %}readonly{% endif %} required>
+
+      <label>Age:</label>
+      <input type="number" name="age" value="{{ session.get('age', '') }}" {% if session.get('role') == 'Patient' %}readonly{% endif %} required>
+
+      <label>Gender:</label>
+      <select name="gender" {% if session.get('role') == 'Patient' %}disabled{% endif %}>
+        <option value="Male" {% if session.get('gender') == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if session.get('gender') == 'Female' %}selected{% endif %}>Female</option>
+        <option value="Other" {% if session.get('gender') == 'Other' %}selected{% endif %}>Other</option>
+      </select>
+
+      <label>Contact:</label>
+      <input type="text" name="contact" value="{{ session.get('contact', '') }}" {% if session.get('role') == 'Patient' %}readonly{% endif %} required>
+    </div>
+    <button type="button" onclick="showStep(2)">Fill Symptoms</button>
+  </div>
+
+  <!-- 🔹 STEP 2: Symptoms & Vitals -->
+  <div id="step2" style="display:none;">
+    <div class="gridw">
+      <label>Symptoms:</label>
+      <textarea name="symptoms" id="symptoms_input" required></textarea>
+
+      <label>Medical History:</label>
+      <textarea name="history" placeholder="Have you faced these problems? If yes please explain how often you get them."></textarea>
+
+
+      <label>BP:</label>
+      <input type="text" name="bp">
+
+      <label>Heart Rate:</label>
+      <input type="number" name="heart_rate">
+
+      <label>Respiratory Rate:</label>
+      <input type="number" name="respiratory_rate">
+
+      <label>Oxygen Saturation:</label>
+      <input type="number" name="oxygen_saturation">
+    </div>
+    <div style="text-align: center;">
+      <button type="button" onclick="showStep(1)">Back</button>
+      <button type="button" onclick="showStep(3)">Select Doctor</button>
+    </div>
+
+  </div>
+
+  <!-- 🔹 STEP 3: Doctor & Appointment -->
+  <div id="step3" style="display:none;">
+    <div class="gridw">
+      <label>Specialization:</label>
+      <input type="text" id="specialization" name="specialization" readonly>
+
+      <label>Select Doctor:</label>
+      <select id="doctor_select" name="doctor" required></select>
+
+      <label>Available Days:</label>
+      <input type="text" id="available_days" readonly>
+
+      <label>Appointment Date:</label>
+      <input type="date" id="appointment_date" name="appointment_date" required>
+    </div>
+    <div style="text-align: center;">
+      <button type="button" onclick="showStep(2)">Back</button>
+      <button type="submit">Submit</button>
+    </div>
+
+  </div>
+
+</form>
+
+</div>
+
+<script>
+$(document).ready(function () {
+  // ✅ Detect specialization from symptoms
+  $("#symptoms_input").on("input", function () {
+    var symptoms = $(this).val().toLowerCase().trim();
+    var specialization = "General Medicine";
+    if (
+      symptoms.includes("heart attack") ||
+      symptoms.includes("severe chest pain") ||
+      symptoms.includes("cardiac arrest") ||
+      symptoms.includes("irregular heartbeat") ||
+      symptoms.includes("mild chest pain") ||
+      symptoms.includes("shortness of breath") ||
+      symptoms.includes("palpitations") ||
+      symptoms.includes("mild breathlessness") ||
+      symptoms.includes("occasional chest discomfort") ||
+      symptoms.includes("mild fatigue")||symptoms.includes("chest pain")
+    ) {
+      specialization = "Cardiology";
+    } else if (
+      symptoms.includes("stroke") ||
+      symptoms.includes("seizure") ||
+      symptoms.includes("loss of consciousness") ||
+      symptoms.includes("migraine") ||
+      symptoms.includes("numbness") ||
+      symptoms.includes("loss of coordination") ||
+      symptoms.includes("dizziness") ||
+      symptoms.includes("tingling sensation") ||
+      symptoms.includes("mild headache") ||
+      symptoms.includes("lightheadedness")
+    ) {
+      specialization = "Neurology";
+    } else if (
+      symptoms.includes("compound fracture") ||
+      symptoms.includes("dislocated joint with bleeding") ||
+      symptoms.includes("bone fracture") ||
+      symptoms.includes("severe swelling") ||
+      symptoms.includes("dislocated joint") ||
+      symptoms.includes("sprain") ||
+      symptoms.includes("moderate joint pain") ||
+      symptoms.includes("muscle strain") ||
+      symptoms.includes("minor bruises")
+    ) {
+      specialization = "Orthopedics";
+    } else if (
+      symptoms.includes("newborn fever") ||
+      symptoms.includes("severe dehydration") ||
+      symptoms.includes("high fever") ||
+      symptoms.includes("persistent cough") ||
+      symptoms.includes("difficulty breathing") ||
+      symptoms.includes("sore throat") ||
+      symptoms.includes("moderate fever") ||
+      symptoms.includes("runny nose") ||
+      symptoms.includes("mild cough")
+    ) {
+      specialization = "Pediatrics";
+    } else if (
+      symptoms.includes("sepsis") ||
+      symptoms.includes("unconsciousness") ||
+      symptoms.includes("severe fatigue") ||
+      symptoms.includes("persistent vomiting") ||
+      symptoms.includes("mild symptoms") ||
+      symptoms.includes("headache") ||
+      symptoms.includes("cold") ||
+      symptoms.includes("seasonal allergies") ||
+      symptoms.includes("body aches")
+    ) {
+      specialization = "General Medicine";
+    }
+    
+    $("#specialization").val(specialization);
+
+    // ✅ Fetch doctors for specialization
+    $.ajax({
+      url: "{{ url_for('get_doctors') }}",
+      type: "POST",
+      contentType: "application/json",
+      data: JSON.stringify({ specialization: specialization }),
+      success: function (data) {
+        $("#doctor_select").empty().append('<option value="" selected disabled>Select a Doctor</option>');
+        if (data.length === 0) {
+          $("#doctor_select").append('<option value="">No Doctors Available</option>');
+        } else {
+          data.forEach(function (doctor) {
+            $("#doctor_select").append('<option value="' + doctor.id + '" data-days="' + doctor.days + '">' + doctor.name + '</option>');
+          });
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching doctors:", error);
+      }
+    });
+  });
+
+  // ✅ Auto-fill appointment date
+  $("#doctor_select").on("change", function () {
+    var selectedDoctor = $(this).find(":selected");
+    var availableDays = selectedDoctor.data("days");
+
+    $("#available_days").val(availableDays);
+
+    var today = new Date();
+    var availableDaysArray = availableDays ? availableDays.split(", ") : [];
+
+    function getNextAvailableDate() {
+      for (var i = 1; i <= 7; i++) {
+        var futureDate = new Date();
+        futureDate.setDate(today.getDate() + i);
+        var dayName = futureDate.toLocaleString('en-us', { weekday: 'long' });
+        if (availableDaysArray.includes(dayName)) {
+          return futureDate.toISOString().split('T')[0];
+        }
+      }
+      return "";
+    }
+
+    $("#appointment_date").val(getNextAvailableDate());
+  });
+});
+</script>
+<script>
+function showStep(stepNumber) {
+  // Hide all steps
+  document.getElementById("step1").style.display = "none";
+  document.getElementById("step2").style.display = "none";
+  document.getElementById("step3").style.display = "none";
+
+  // Show current step
+  document.getElementById("step" + stepNumber).style.display = "block";
+
+  // Update body background based on step
+  const body = document.body;
+  if (stepNumber === 1) {
+    body.style.backgroundImage = "url('/static/images/bg1.jpg')";
+  } else if (stepNumber === 2) {
+    body.style.backgroundImage = "url('/static/images/bg2.jpg')";
+  } else if (stepNumber === 3) {
+    body.style.backgroundImage = "url('/static/images/bg3.jpg')";
+  }
+}
+</script>
+
+
+
+</body>
+</html>

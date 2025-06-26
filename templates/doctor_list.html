@@ -1,0 +1,95 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Overboard Doctors</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: url("{{ url_for('static', filename='images/hospital-care.jpeg') }}") no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      margin: 50px;
+    }
+
+    .doctor-card {
+      width: 300px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+
+    .doctor-card i {
+      font-size: 80px;
+      color: #3c8dbc;
+    }
+
+    .doctor-card p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .doctor-card .name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .back-button {
+      display: block;
+      margin: 30px auto; /* Center the button horizontally */
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      text-align: center;
+      width: 200px; /* Set width for button */
+    }
+
+    .back-button:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      text-align: center;
+      width: 100%;
+      margin-bottom: 30px;
+      font-size: 28px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Overboard Doctors</h2> <!-- Title above doctor list -->
+
+  <div class="container">
+    {% for doctor in doctor_patient_counts %}
+    <div class="doctor-card">
+      <i class="fas fa-user-doctor"></i>
+      <p class="name">Dr. {{ doctor.name }}</p>
+      <p><strong>Doctor ID:</strong> {{ doctor.id }}</p>
+      <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+      <p><strong>Available Days:</strong> {{ doctor.days }}</p>
+      <p><strong>Patients Today:</strong> {{ doctor.patients | int }}</p>  <!-- Ensuring integer display -->
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Centered Back to Home button -->
+  <a class="back-button" href="{{ url_for('home') }}">Back to Home</a>
+
+</body>
+</html>

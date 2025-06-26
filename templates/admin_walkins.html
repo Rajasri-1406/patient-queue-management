@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walk-in Patients - Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='images/hospital-care.jpeg') }}") no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.8); /* Transparent white */
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #17a2b8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 30px auto; /* Center the button horizontally */
+            text-align: center;
+            width: 200px; /* Set width for consistent button size */
+        }
+
+        .back-button:hover {
+            background-color: #138496;
+        }
+
+        h2 {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h2 class="text-center">Normal Queue</h2>
+
+        <table>
+            <thead class="table-dark">
+            <tr>
+                <th>Entry No</th>
+                <th>Patient Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Symptoms</th>
+                <th>Specialization</th> <!-- was Room No before -->
+                <th>Doctor Name</th>
+                <th>Date</th>
+                <th>Triage Level</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for walkin in walkins %}
+            <tr>
+                <td>{{ walkin[0]|int }}</td> <!-- Token No -->
+                <td>{{ walkin[1] }}</td> <!-- Patient Name -->
+                <td>{{ walkin[2]|int }}</td> <!-- Age -->
+                <td>{{ walkin[3] }}</td> <!-- Gender -->
+                <td>{{ walkin[4] }}</td> <!-- Symptoms -->
+                <td>{{ walkin[5] }}</td> <!-- Specialization -->
+                <td>{{ walkin[6] }}</td> <!-- Doctor Name -->
+                <td>{{ walkin[7].strftime('%Y-%m-%d') }}</td> <!-- Date -->
+                <td>{{ walkin[8] }}</td> <!-- Triage Level -->
+            </tr>
+            {% endfor %}
+        </tbody>
+
+        </table>
+        
+        <!-- Centered Back to Home button -->
+        <a class="back-button" href="{{ url_for('home') }}">Back to Home</a>
+        <a href="{{ url_for('admin_add_walkin') }}" class="btn btn-success mb-3">+ Add New Walk-in</a>
+
+    </div>
+   
+</body>
+</html>

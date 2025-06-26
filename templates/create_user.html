@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <style>
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+      
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+            <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+            <li><a href="{{ url_for('login') }}">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <h2>Create an Account</h2>
+
+        <form method="POST">
+            <label>User ID:</label>
+            <input type="text" name="user_id" required>
+        
+            <label>Name:</label>
+            <input type="text" name="name" required>
+        
+            <label>Role:</label>
+            <select name="role" id="role" required>
+                <option value="Patient">Patient</option>
+                <option value="Doctor">Doctor</option>
+                <option value="Admin">Admin</option>
+            </select>
+
+            <!-- ✅ Specialization Dropdown (Only for Doctors) -->
+            <div id="specialization-field" style="display: none;">
+                <label>Specialization:</label>
+                <select name="specialization">
+                    <option value="Cardiology">Cardiology</option>
+                    <option value="Neurology">Neurology</option>
+                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="Orthopedics">Orthopedics</option>
+                    <option value="General Medicine">General Medicine</option>
+                </select>
+            </div>
+        
+            <label>Password:</label>
+            <input type="password" name="password" required>
+        
+            <button type="submit">Create Account</button>
+        </form>
+    </div>
+
+    <!-- ✅ JavaScript for Specialization Visibility -->
+    <script>
+        document.getElementById('role').addEventListener('change', function() {
+            document.getElementById('specialization-field').style.display = 
+                this.value === 'Doctor' ? 'block' : 'none';
+        });
+
+        // ✅ Ensure the correct visibility on page load (in case of form resubmission)
+        window.onload = function() {
+            var role = document.getElementById('role').value;
+            document.getElementById('specialization-field').style.display = 
+                role === 'Doctor' ? 'block' : 'none';
+        };
+    </script>
+
+</body>
+</html>

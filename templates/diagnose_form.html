@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagnose Patient</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='triage.css') }}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: medium;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        body {
+        background-image: url("/static/images/medical_history.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h2>Diagnose Patient</h2>
+        <form method="POST" action="{{ url_for('submit_diagnosis') }}">
+            <!-- Hidden doctor & patient fields -->
+            <input type="hidden" name="doctor_id" value="{{ doctor_id }}">
+            <input type="hidden" name="doctor_name" value="{{ doctor_name }}">
+            <input type="hidden" name="patient_id" value="{{ patient.patient_id }}">
+            <input type="hidden" name="specialization" value="{{ patient.specialization }}">
+
+            <!-- Patient info -->
+            <label>Patient Name:</label>
+            <input type="text" name="patient_name" value="{{ patient.name }}" readonly>
+
+            <label>Symptoms:</label>
+            <input type="text" name="symptoms" value="{{ patient.symptoms }}" readonly>
+
+            <label>Specialization:</label>
+            <input type="text" value="{{ patient.specialization }}" readonly>
+
+            <label>Criticality Level:</label>
+            <input type="text" name="criticality" value="{{ patient.triage_level }}" readonly>
+
+            <label>Appointment Date:</label>
+            <input type="text" name="appointment_date" value="{{ patient.appointment_date }}" readonly>
+
+            <label>Appointment Time:</label>
+            <input type="text" name="appointment_time" value="{{ patient.appointment_time }}" readonly>
+
+            <!-- Diagnosis fields -->
+            <label>Prescribed Medicines:</label>
+            <textarea name="medicines" required></textarea>
+
+            <label>Prescription Details:</label>
+            <textarea name="prescription_details" required></textarea>
+
+            <label>Additional Notes:</label>
+            <textarea name="additional_notes"></textarea>
+
+            <button type="submit">Submit Diagnosis</button>
+        </form>
+    </div>
+</body>
+</html>

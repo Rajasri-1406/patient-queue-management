@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Triage Results</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background: linear-gradient(120deg, #e0f7fa, #fdfdfd);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 15px;
+            background-image: url("/static/images/triage_results.avif");
+            background-size: cover;
+            background-position: center;
+        background-attachment: fixed;
+        }
+
+        .appointment-slip {
+            max-width: 950px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .appointment-slip::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(0, 123, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007BFF;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .info-group {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.2s ease;
+        }
+
+        .info-group:hover {
+            background-color: #f8f9fa;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #212529;
+            width: 240px;
+        }
+
+        .info-value {
+            flex: 1;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .buttons {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .buttons .btn {
+            margin: 10px;
+            min-width: 190px;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 12px 20px;
+        }
+
+        .email-input {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .email-input input[type="email"] {
+            max-width: 320px;
+            margin-right: 10px;
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 10px 14px;
+        }
+
+        .email-input button {
+            padding: 10px 24px;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 576px) {
+            .info-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .info-label {
+                width: auto;
+                margin-bottom: 4px;
+            }
+
+            .email-input form {
+                flex-direction: column;
+            }
+
+            .email-input input,
+            .email-input button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+
+            .appointment-slip {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="appointment-slip">
+    <h2>Your Appointment Details</h2>
+
+    {% set fields = {
+        'Patient ID': patient_id,
+        'Name': name,
+        'Age': age,
+        'Gender': gender,
+        'Contact': contact,
+        'Symptoms': symptoms,
+        'Specialization': specialization,
+        'Assigned Doctor': doctor,
+        'Appointment Date': date,
+        'Appointment Time': time,
+        'Triage Level': triage,
+        'Estimated Waiting Time': wait
+    } %}
+
+    {% for label, value in fields.items() %}
+    <div class="info-group">
+        <div class="info-label">{{ label }}:</div>
+        <div class="info-value">{{ value }}</div>
+    </div>
+    {% endfor %}
+
+    <div class="buttons no-print">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Appointment</button>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">🏠 Back to Home</a>
+    </div>
+
+    <div class="email-input no-print">
+        <form action="{{ url_for('send_email') }}" method="post" class="d-flex justify-content-center flex-wrap align-items-center">
+            <!-- Hidden Fields -->
+            <input type="hidden" name="patient_id" value="{{ patient_id }}">
+            <input type="hidden" name="name" value="{{ name }}">
+            <input type="hidden" name="age" value="{{ age }}">
+            <input type="hidden" name="gender" value="{{ gender }}">
+            <input type="hidden" name="contact" value="{{ contact }}">
+            <input type="hidden" name="symptoms" value="{{ symptoms }}">
+            <input type="hidden" name="specialization" value="{{ specialization }}">
+            <input type="hidden" name="doctor" value="{{ doctor }}">
+            <input type="hidden" name="date" value="{{ date }}">
+            <input type="hidden" name="time" value="{{ time }}">
+            <input type="hidden" name="triage" value="{{ triage }}">
+            <input type="hidden" name="wait" value="{{ wait }}">
+
+            <label for="email" class="visually-hidden">Recipient Email</label>
+            <input type="email" class="form-control" id="email" name="email" required placeholder="Recipient Email">
+            <button type="submit" class="btn btn-success">✉️ Send Email</button>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

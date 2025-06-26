@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('triage') }}">Appointment</a></li>
+            <li><a href="{{ url_for('emergency') }}">Emergency</a></li>
+            <li><a href="{{ url_for('login') }}"><b>Login</b></a></li>
+        </ul>
+    </nav>
+
+    <div class="form-container">
+        <h2>Login</h2>
+
+        <!-- ✅ Flash Messages Block -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <label>User ID:</label>
+            <input type="text" name="user_id" required>
+
+            <label>Name:</label>
+            <input type="text" name="name" required>
+
+            <label>Role:</label>
+            <select name="role">
+                <option value="Doctor">Doctor</option>
+                <option value="Patient">Patient</option>
+                <option value="Admin">Admin</option>
+            </select>
+
+            <label>Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p>If user doesn't exist,then</p>
+        <!-- ✅ User has to manually click this to go to account creation -->
+        <a href="{{ url_for('create_user') }}">
+            <button type="button">Create User</button>
+        </a>
+    </div>
+</body>
+</html>
