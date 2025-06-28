@@ -142,9 +142,9 @@ Feel free to open issues or submit pull requests to improve the project.
 
 ## 👤 Author
 
-**Sri**  
+**Rajasri S**  
 B.Tech Information Technology    
-[LinkedIn]([https://www.linkedin.com/in/your-username/](https://www.linkedin.com/in/rajasri-sampath-kumar-892046296/)) | [GitHub](https://github.com/Rajasri-1406)
+[LinkedIn](https://www.linkedin.com/in/your-username/](https://www.linkedin.com/in/rajasri-sampath-kumar-892046296/)) | [GitHub](https://github.com/Rajasri-1406)
 
 ---
 
